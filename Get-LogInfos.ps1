@@ -9,7 +9,7 @@
   Default is C:\logs\
 .PARAMETER summaryFilePath
   Path incl. Name for CSV-File containing summary of log files to be checked
-  Default is $logdirPath\summary.csv
+  Default is $logDirPath\summary.csv
 .EXAMPLE
   .\Get-LogInfos.ps1
   Searches C:\logs\ and generates summary.csv in C:\logs\
@@ -21,11 +21,11 @@
   Searches \\SERVER\share\ and generates summary.csv in that share with the current date
 .NOTES
 	Version: 0.2.2
-	Versionshistorie:
+	History:
 		v.0.1.0 First running version
         v.0.2.0 Search adjusted to match "*Found CVE-202*-* vulnerability in*"
         v.0.2.1 Added Detection if search is not finished
-        v.0.2.2 added dynamic Parameters for logdirpath and summaryfilepath
+        v.0.2.2 added dynamic Parameters for logDirPath and summaryFilePath
 #>
 [CmdletBinding()]
 param (
@@ -36,12 +36,12 @@ param (
 )
 
 Write-Host "$(Get-Date -Format 'dd.MM.yyyy HH:mm:ss')`tStarting Script execution..." -ForegroundColor Green
-Write-Output "Hostname`tQuelle`tFehlermeldung" | Out-File $summaryFilePath
+Write-Output "Hostname`tSource`tMessage" | Out-File $summaryFilePath
 $logs = Get-ChildItem -Path $logDirPath | Where-Object {$_.Name -like "*.log"}
 Write-Host "$(Get-Date -Format 'dd.MM.yyyy HH:mm:ss')`t$($logs.Count) Log files found. Start processing..." -ForegroundColor Green
 foreach ($log in $logs) {
     Write-Host "$(Get-Date -Format 'dd.MM.yyyy HH:mm:ss')`t$($log.Name)" -ForegroundColor Green
-    $content = Get-Content -Path $($log.Fullname)
+    $content = Get-Content -Path $($log.FullName)
     $hostname = $($($log.Name).TrimEnd(".log"))
     if ($($content[-3] -notlike "*End script*")) {
         Write-Output "$hostname`tScript`tSearch not finished" | Out-File $summaryFilePath -Append
